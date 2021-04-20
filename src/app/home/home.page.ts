@@ -29,7 +29,7 @@ export class HomePage {
   isPlaying = false;
 
   progress = 0; // %
-  progress_abs = 0;
+  progress_abs = '';
   progress_max = 1000;
 
   @ViewChild('range', { static: false }) range: IonRange;
@@ -87,10 +87,28 @@ export class HomePage {
 
   updateProgress() {
     let seek = this.player.seek();
-    this.progress_abs = seek;
+    this.progress_abs = this.convertToReadableTimestamp(seek);
     this.progress = (seek / this.player.duration()) * this.progress_max || 0;
     setTimeout(() => {
       this.updateProgress();
     }, 100);
+  }
+
+  // Example
+  //   70.0 => 01:10
+  //  123.4 => 02:03
+  private convertToReadableTimestamp(position: number) {
+    let mm = Math.floor(position / 60);
+    let ss = Math.floor(position % 60);
+    return `${this.padZero(mm)}:${this.padZero(ss)}`;
+  }
+
+  // NOTE: Assume 0 <= num < 100
+  private padZero(num: number): string {
+    if (0 <= num && num < 10) {
+      return `0${num}`;
+    } else {
+      return `${num}`;
+    }
   }
 }
