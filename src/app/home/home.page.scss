@@ -25,3 +25,8 @@
 #container a {
   text-decoration: none;
 }
+
+ion-content, ios-list, ios-item {
+  --background: var(--ion-color-dark);
+  --ion-background-color: var(--ion-color-dark);
+}
