@@ -1,8 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="dark">
-    <ion-title>
-      Learn Japanese with Subtitles
-    </ion-title>
+    <ion-title> Learn Japanese with Subtitles </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -23,22 +21,38 @@
         {{ activeTrack.name }}
       </ion-col>
       <ion-col size="12">
-        <ion-range #range [(ngModel)]="progress" max="1000" color="success" (touchend)="seek()" (mouseup)="seek()"></ion-range>
+        <ion-range
+          #range
+          [(ngModel)]="progress"
+          max="1000"
+          color="success"
+          (touchend)="seek()"
+          (mouseup)="seek()"
+          (touchstart)="toggleUpdateProgress(true)"
+          (mousedown)="toggleUpdateProgress(true)"
+        ></ion-range>
       </ion-col>
       <ion-col size="12">
-        <ion-text color="light">
-          {{ progress_abs }}
-        </ion-text>
-        <!-- <ion-range #range [(ngModel)]="progress" max="1000" color="success"></ion-range> -->
+        <ion-text color="light"> {{ progress_abs }} </ion-text>
       </ion-col>
       <ion-col size="12" class="ion-text-center">
         <ion-button fill="clear" (click)="prev()" color="light">
           <ion-icon slot="icon-only" name="caret-back-outline"></ion-icon>
         </ion-button>
-        <ion-button fill="clear" (click)="togglePlayer(false)" *ngIf="!isPlaying" color="light">
+        <ion-button
+          fill="clear"
+          (click)="togglePlayer(false)"
+          *ngIf="!isPlaying"
+          color="light"
+        >
           <ion-icon slot="icon-only" name="play"></ion-icon>
         </ion-button>
-        <ion-button fill="clear" (click)="togglePlayer(true)" *ngIf="isPlaying" color="light">
+        <ion-button
+          fill="clear"
+          (click)="togglePlayer(true)"
+          *ngIf="isPlaying"
+          color="light"
+        >
           <ion-icon slot="icon-only" name="pause"></ion-icon>
         </ion-button>
         <ion-button fill="clear" (click)="next()" color="light">

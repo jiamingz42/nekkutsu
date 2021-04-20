@@ -65,6 +65,8 @@ export class HomePage {
   progress_abs = '';
   progress_max = 1000;
 
+  shouldUpdateProgress = true;
+
   @ViewChild('range', { static: false }) range: IonRange;
 
   constructor() {}
@@ -113,18 +115,25 @@ export class HomePage {
   }
 
   seek() {
+    this.toggleUpdateProgress(/* pause= */ false);
     let newValue = +this.range.value;
     let duration = this.player.duration();
     this.player.seek(duration * (newValue / this.progress_max));
   }
 
   updateProgress() {
-    let seek = this.player.seek();
-    this.progress_abs = this.convertToReadableTimestamp(seek);
-    this.progress = (seek / this.player.duration()) * this.progress_max || 0;
+    if (this.shouldUpdateProgress) {
+      let seek = this.player.seek();
+      this.progress_abs = this.convertToReadableTimestamp(seek);
+      this.progress = (seek / this.player.duration()) * this.progress_max || 0;
+    }
     setTimeout(() => {
       this.updateProgress();
     }, 100);
+  }
+
+  toggleUpdateProgress(pause: boolean) {
+    this.shouldUpdateProgress = !pause;
   }
 
   // Example
