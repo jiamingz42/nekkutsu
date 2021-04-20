@@ -71,6 +71,7 @@ export class HomePage {
 
   constructor() {}
 
+
   start(track: Track) {
     if (this.player) {
       this.player.stop();
@@ -87,7 +88,7 @@ export class HomePage {
     this.player.play();
   }
 
-  togglePlayer(pause) {
+  togglePlayer(pause: boolean) {
     this.isPlaying = !pause;
     if (pause) {
       this.player.pause();
@@ -114,6 +115,12 @@ export class HomePage {
     }
   }
 
+  rewind(second: number) {
+    let seek = this.player.seek();
+    this.player.seek(Math.max(0, seek - second));
+    this.updateProgress(/* once= */ true);
+  }
+
   seek() {
     this.toggleUpdateProgress(/* pause= */ false);
     let newValue = +this.range.value;
@@ -121,15 +128,17 @@ export class HomePage {
     this.player.seek(duration * (newValue / this.progress_max));
   }
 
-  updateProgress() {
+  updateProgress(once = false) {
     if (this.shouldUpdateProgress) {
       let seek = this.player.seek();
       this.progress_abs = this.convertToReadableTimestamp(seek);
       this.progress = (seek / this.player.duration()) * this.progress_max || 0;
     }
-    setTimeout(() => {
-      this.updateProgress();
-    }, 100);
+    if (!once) {
+      setTimeout(() => {
+        this.updateProgress();
+      }, 100);
+    }
   }
 
   toggleUpdateProgress(pause: boolean) {
@@ -152,5 +161,12 @@ export class HomePage {
     } else {
       return `${num}`;
     }
+  }
+
+  private startLooping(start: number, end: number) {
+    // TODO: Replace "bar" with a uniuqe key
+    let spriteKey = "bar";
+    this.player._sprite[spriteKey] = [start * 1000, (end - start) * 1000, /* loop= */ true];
+    this.player.play(spriteKey);
   }
 }
