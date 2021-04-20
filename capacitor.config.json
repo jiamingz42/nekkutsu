@@ -1,5 +1,5 @@
 {
-  "appId": "io.ionic.starter",
+  "appId": "jiamingz.audioplayer",
   "appName": "audioPlayer",
   "bundledWebRuntime": false,
   "npmClient": "npm",
