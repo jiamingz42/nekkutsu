@@ -36,6 +36,15 @@
         <ion-text color="light"> {{ progress_abs }} </ion-text>
       </ion-col>
       <ion-col size="12" class="ion-text-center">
+        <ion-button fill="clear" color="light" (click)="setLoopingStart()" *ngIf="!abLooping.start && !abLooping.end">
+          <ion-text class="circle">A</ion-text>
+        </ion-button>
+        <ion-button fill="clear" color="light" (click)="setLoopingEnd()" *ngIf="abLooping.start && !abLooping.end">
+          <ion-text class="circle">B</ion-text>
+        </ion-button>
+        <ion-button fill="clear" color="light" (click)="unsetLooping()" *ngIf="abLooping.start && abLooping.end">
+          <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+        </ion-button>
         <ion-button fill="clear" (click)="rewind(3)" color="light">
           <ion-icon slot="icon-only" name="play-back-circle-outline"></ion-icon>
         </ion-button>
@@ -59,7 +68,10 @@
           <ion-icon slot="icon-only" name="pause"></ion-icon>
         </ion-button>
         <ion-button fill="clear" (click)="next()" color="light">
-          <ion-icon slot="icon-only" name="play-skip-forward-outline"></ion-icon>
+          <ion-icon
+            slot="icon-only"
+            name="play-skip-forward-outline"
+          ></ion-icon>
         </ion-button>
       </ion-col>
     </ion-row>

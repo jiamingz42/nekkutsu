@@ -8,6 +8,18 @@ export interface Track {
   subtitle: string;
 }
 
+export interface ABLooping {
+  start?: number;
+  end?: number;
+}
+
+class LoopingManager {
+  sound: Howl;
+  constructor(sound: Howl) {
+    this.sound = sound;
+  }
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -67,10 +79,13 @@ export class HomePage {
 
   shouldUpdateProgress = true;
 
+  abLooping: ABLooping = {};
+
+  activeSoundId: number = null;
+
   @ViewChild('range', { static: false }) range: IonRange;
 
   constructor() {}
-
 
   start(track: Track) {
     if (this.player) {
@@ -145,6 +160,27 @@ export class HomePage {
     this.shouldUpdateProgress = !pause;
   }
 
+  setLoopingStart() {
+    this.abLooping.start = this.player.seek();
+  }
+
+  setLoopingEnd() {
+    this.abLooping.end = this.player.seek();
+    this.startLooping(this.abLooping);
+  }
+
+  unsetLooping() {
+    delete this.abLooping.start;
+    delete this.abLooping.end;
+    let seek = 0;
+    if (this.player) {
+      seek = this.player.seek();
+      this.player.stop(this.activeSoundId);
+    }
+    this.player.play();
+    this.player.seek(seek);
+  }
+
   // Example
   //   70.0 => 01:10
   //  123.4 => 02:03
@@ -163,10 +199,17 @@ export class HomePage {
     }
   }
 
-  private startLooping(start: number, end: number) {
-    // TODO: Replace "bar" with a uniuqe key
-    let spriteKey = "bar";
-    this.player._sprite[spriteKey] = [start * 1000, (end - start) * 1000, /* loop= */ true];
-    this.player.play(spriteKey);
+  private startLooping(abLooping: ABLooping) {
+    let spriteKey = `${abLooping.start}_${abLooping.end}`;
+    this.player._sprite[spriteKey] = [
+      abLooping.start * 1000,
+      (abLooping.end - abLooping.start) * 1000,
+      /* loop= */ true,
+    ];
+    // NOTE: Without this, you will hear two audio tracks playing at the same time
+    if (this.player) {
+      this.player.stop();
+    }
+    this.activeSoundId = this.player.play(spriteKey);
   }
 }

@@ -30,3 +30,10 @@ ion-content, ios-list, ios-item {
   --background: var(--ion-color-dark);
   --ion-background-color: var(--ion-color-dark);
 }
+
+.circle {
+  border: 2px solid white;
+  border-radius: 50px;
+  padding: 3px 5px;
+  font-size: 12px;
+}
