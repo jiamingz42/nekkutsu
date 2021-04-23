@@ -131,9 +131,13 @@ export class HomePage {
   }
 
   rewind(second: number) {
-    let seek = this.player.seek();
+    let seek = this.getPlayerSeek(this.player);
     this.player.seek(Math.max(0, seek - second));
     this.updateProgress(/* once= */ true);
+  }
+
+  private getPlayerSeek(player: Howl) {
+    return this.player.seek() as number;
   }
 
   seek() {
@@ -145,7 +149,7 @@ export class HomePage {
 
   updateProgress(once = false) {
     if (this.shouldUpdateProgress) {
-      let seek = this.player.seek();
+      let seek = this.getPlayerSeek(this.player);
       this.progress_abs = this.convertToReadableTimestamp(seek);
       this.progress = (seek / this.player.duration()) * this.progress_max || 0;
     }
@@ -161,11 +165,11 @@ export class HomePage {
   }
 
   setLoopingStart() {
-    this.abLooping.start = this.player.seek();
+    this.abLooping.start = this.getPlayerSeek(this.player);
   }
 
   setLoopingEnd() {
-    this.abLooping.end = this.player.seek();
+    this.abLooping.end = this.getPlayerSeek(this.player);
     this.startLooping(this.abLooping);
   }
 
@@ -174,7 +178,7 @@ export class HomePage {
     delete this.abLooping.end;
     let seek = 0;
     if (this.player) {
-      seek = this.player.seek();
+      seek = this.getPlayerSeek(this.player);;
       this.player.stop(this.activeSoundId);
     }
     this.player.play();
@@ -201,7 +205,7 @@ export class HomePage {
 
   private startLooping(abLooping: ABLooping) {
     let spriteKey = `${abLooping.start}_${abLooping.end}`;
-    this.player._sprite[spriteKey] = [
+    (this.player as any)._sprite[spriteKey] = [
       abLooping.start * 1000,
       (abLooping.end - abLooping.start) * 1000,
       /* loop= */ true,
