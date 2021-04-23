@@ -14,7 +14,11 @@ const routes: Routes = [
   },
   {
     path: 'track/:id',
-    component: TrackComponent
+    loadChildren: () => import('./track/track.module').then( m => m.TrackModule)
+  },
+  {
+    path: 'subtitle',
+    loadChildren: () => import('./subtitle/subtitle.module').then( m => m.SubtitlePageModule)
   }
 ];
 

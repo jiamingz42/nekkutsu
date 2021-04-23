@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Subtitle</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item button *ngFor="let caption of captions">
+      <ion-label [color]="caption.id == activeId ? 'primary' : 'dark'">
+        {{ caption.text }}
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar color="dark">
+    <ion-row>
+      <ion-col size="12" class="ion-text-center">
+        <ion-button fill="clear" (click)="prev()" color="light">
+          <ion-icon slot="icon-only" name="play-skip-back-outline"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" (click)="next()" color="light">
+          <ion-icon slot="icon-only" name="play-skip-forward-outline"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-footer>

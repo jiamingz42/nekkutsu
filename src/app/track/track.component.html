@@ -1,3 +1,7 @@
 <p>
-  track works!
+  {{captions[0].text}}
 </p>
+<li *ngFor="let caption of captions; index as i; first as isFirst">
+  {{i}}/{{caption.text}}. {{caption.start}} <span *ngIf="isFirst">default</span>
+</li>
+<p>Hi</p>
