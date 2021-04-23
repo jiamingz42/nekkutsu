@@ -4,7 +4,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content #content>
   <ion-list>
     <ion-item button *ngFor="let caption of captions">
       <ion-label [color]="caption.id == activeId ? 'primary' : 'dark'">
@@ -23,6 +23,9 @@
         </ion-button>
         <ion-button fill="clear" (click)="next()" color="light">
           <ion-icon slot="icon-only" name="play-skip-forward-outline"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" color="light" (click)="scroll()">
+          <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
         </ion-button>
       </ion-col>
     </ion-row>

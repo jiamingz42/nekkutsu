@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonContent } from '@ionic/angular';
 import webvtt from 'node-webvtt';
 
 export interface Caption {
@@ -18,6 +19,8 @@ export class SubtitlePage implements OnInit {
 
   activeId: number = 0;
   captions: Caption[] = null;
+
+  @ViewChild('content', { static: false }) content: IonContent;
 
   ngOnInit() {
     const self = this;
@@ -45,5 +48,9 @@ export class SubtitlePage implements OnInit {
     if (this.captions && this.activeId < this.captions.length) {
       this.activeId += 1;
     }
+  }
+
+  scroll() {
+    this.content.scrollByPoint(0, 1000, 500);
   }
 }
