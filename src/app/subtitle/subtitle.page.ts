@@ -4,12 +4,40 @@ import webvtt from 'node-webvtt';
 import { Howl } from 'howler';
 import _ from 'lodash';
 
+import * as furigana from 'furigana';
+import * as Kuroshiro from 'kuroshiro';
+import * as KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
+
+const charOpts = {
+  to: "hiragana",
+  mode: "okurigana",
+  delimiter_start: "[",
+  delimiter_end: "]",
+};
+
+async function main ({ text: _text, skipTranslate }) {
+  const text = _text.replace(/\s+/g, ''); // remove whitespace
+  const kuroshiro = new Kuroshiro.default();
+  console.dir(KuromojiAnalyzer);
+  await kuroshiro.init(new KuromojiAnalyzer.default({ dictPath: "assets/dict" }));
+  const converted = await kuroshiro.convert(text, charOpts);
+  console.log(converted);
+}
+
+main({text: "感じ取れたら手を繋ごう、重なるのは人生のライン and レミリア最高！", skipTranslate: true});
+
 export interface Caption {
   id: number;
   start: number;
   end: number;
   text: string;
 }
+
+// kuroshiro.init(function (err) {
+//   // kuroshiro is ready
+//   var result = kuroshiro.convert('感じ取れたら手を繋ごう、重なるのは人生のライン and レミリア最高！');
+//   console.log(result);
+// });
 
 @Component({
   selector: 'app-subtitle',
@@ -27,7 +55,7 @@ export class SubtitlePage implements OnInit {
   activeId: number = 0;
   captions: Caption[] = null;
 
-  activeSoundId : number = null;
+  activeSoundId: number = null;
 
   @ViewChild('content', { static: false }) content: IonContent;
 
@@ -51,6 +79,8 @@ export class SubtitlePage implements OnInit {
           text: cue.text,
         }));
       });
+    // const res = kuroshiro.convert("感じ取れたら手を繋ごう、重なるのは人生のライン and レミリア最高！", { to: "hiragana" });
+    // console.log(res);
   }
 
   prev() {
@@ -70,7 +100,7 @@ export class SubtitlePage implements OnInit {
   }
 
   selectCaption(event: any) {
-    const captionIdStr : string = event.currentTarget.dataset.captionId;
+    const captionIdStr: string = event.currentTarget.dataset.captionId;
     const captionId: number = _.toNumber(captionIdStr);
     this.activateCaptionById(captionId);
   }
