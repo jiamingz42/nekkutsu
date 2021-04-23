@@ -6,7 +6,7 @@
 
 <ion-content #content>
   <ion-list>
-    <ion-item button *ngFor="let caption of captions">
+    <ion-item button *ngFor="let caption of captions" (click)="selectCaption($event)" [attr.data-caption-id]="caption.id">
       <ion-label [color]="caption.id == activeId ? 'primary' : 'dark'">
         {{ caption.text }}
       </ion-label>
