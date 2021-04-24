@@ -6,8 +6,31 @@
 
 <ion-content #content>
   <ion-list>
-    <ion-item *ngFor="let caption of captions" (click)="selectCaption($event)" [attr.data-caption-id]="caption.id">
-      <ion-label class="caption" [color]="caption.id == activeId ? 'primary' : 'dark'" text-wrap>
+    <ion-item class="align-bottom">
+      <p>
+        <span *ngFor="let furigana of furiganas" [attr.t]="furigana.ruby">{{ furigana.text }}</span>
+      </p>
+    </ion-item>
+    <ion-item>
+      <ion-text class="caption-test">
+        <span *ngFor="let furigana of furiganas">
+          <ruby *ngIf="furigana.ruby"
+            >{{ furigana.text }}<rt>{{ furigana.ruby }}</rt></ruby
+          >
+          <span *ngIf="!furigana.ruby">{{ furigana.text }}</span>
+        </span>
+      </ion-text>
+    </ion-item>
+    <ion-item
+      *ngFor="let caption of captions"
+      (click)="selectCaption($event)"
+      [attr.data-caption-id]="caption.id"
+    >
+      <ion-label
+        class="caption"
+        [color]="caption.id == activeId ? 'primary' : 'dark'"
+        text-wrap
+      >
         {{ caption.text }}
       </ion-label>
     </ion-item>
@@ -22,7 +45,10 @@
           <ion-icon slot="icon-only" name="play-skip-back-outline"></ion-icon>
         </ion-button>
         <ion-button fill="clear" (click)="next()" color="light">
-          <ion-icon slot="icon-only" name="play-skip-forward-outline"></ion-icon>
+          <ion-icon
+            slot="icon-only"
+            name="play-skip-forward-outline"
+          ></ion-icon>
         </ion-button>
         <ion-button fill="clear" color="light" (click)="scroll()">
           <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>

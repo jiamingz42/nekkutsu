@@ -6,31 +6,41 @@ import _ from 'lodash';
 
 import * as furigana from 'furigana';
 import * as Kuroshiro from 'kuroshiro';
-import * as KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
+import * as KuromojiAnalyzer from 'kuroshiro-analyzer-kuromoji';
 
 const charOpts = {
-  to: "hiragana",
-  mode: "okurigana",
-  delimiter_start: "[",
-  delimiter_end: "]",
+  to: 'hiragana',
+  mode: 'spaced',
+  delimiter_start: '[',
+  delimiter_end: ']',
 };
 
-async function main ({ text: _text, skipTranslate }) {
+async function main({ text: _text, skipTranslate }) {
   const text = _text.replace(/\s+/g, ''); // remove whitespace
   const kuroshiro = new Kuroshiro.default();
   console.dir(KuromojiAnalyzer);
-  await kuroshiro.init(new KuromojiAnalyzer.default({ dictPath: "assets/dict" }));
+  await kuroshiro.init(
+    new KuromojiAnalyzer.default({ dictPath: 'assets/dict' })
+  );
   const converted = await kuroshiro.convert(text, charOpts);
   console.log(converted);
 }
 
-main({text: "感じ取れたら手を繋ごう、重なるのは人生のライン and レミリア最高！", skipTranslate: true});
+main({
+  text: '感じ取れたら手を繋ごう、重なるのは人生のライン and レミリア最高！',
+  skipTranslate: true,
+});
 
 export interface Caption {
   id: number;
   start: number;
   end: number;
   text: string;
+}
+
+export interface Furigana {
+  text: string;
+  ruby?: string;
 }
 
 // kuroshiro.init(function (err) {
@@ -57,6 +67,8 @@ export class SubtitlePage implements OnInit {
 
   activeSoundId: number = null;
 
+  furiganas : Furigana[] = null;
+
   @ViewChild('content', { static: false }) content: IonContent;
 
   ngOnInit() {
@@ -79,8 +91,11 @@ export class SubtitlePage implements OnInit {
           text: cue.text,
         }));
       });
-    // const res = kuroshiro.convert("感じ取れたら手を繋ごう、重なるのは人生のライン and レミリア最高！", { to: "hiragana" });
-    // console.log(res);
+    self.furiganas = [
+      { text: '私', ruby: 'わたし' },
+      { text: 'は' },
+      { text: '学生', ruby: 'がくせい' },
+    ];
   }
 
   prev() {
