@@ -97,6 +97,7 @@ export class SubtitlePage implements OnInit {
 
   player: Howl = null;
   isPlaying = false;
+  lastPlayerPosition = 0;
 
   subtitlePath: string = 'assets/mp3/S01E01.vtt';
   audioPath: string = 'assets/mp3/S01E01.mp3';
@@ -150,7 +151,7 @@ export class SubtitlePage implements OnInit {
 
   play() {
     this.playInternal();
-    this.player.seek(this.activeCaption.start);
+    this.player.seek(this.lastPlayerPosition);
   }
 
   get activeCaption() {
@@ -159,6 +160,7 @@ export class SubtitlePage implements OnInit {
 
   pause() {
     this.isPlaying = false;
+    this.lastPlayerPosition = this.player.seek() as number;
     this.player.pause();
   }
 
@@ -236,7 +238,7 @@ export class SubtitlePage implements OnInit {
         const firstItemOffsetTop = this.getOffsetTop(this.captionsView, 0);
         this.content.scrollToPoint(
           0,
-          itemOffsetTop - firstItemOffsetTop - 350, /* TODO: Hard-coded */
+          itemOffsetTop - firstItemOffsetTop - 350 /* TODO: Hard-coded */,
           1000
         );
       }
