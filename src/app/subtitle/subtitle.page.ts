@@ -210,8 +210,8 @@ export class SubtitlePage implements OnInit {
       this.activeSoundId = this.player.play(spriteConfig.key);
     } else {
       this.activeSoundId = this.player.play();
+      this.isPlaying = true;
     }
-    this.isPlaying = true;
   }
 
   private updateProgress() {
