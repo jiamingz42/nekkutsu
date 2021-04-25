@@ -2,13 +2,7 @@ import { Howl } from 'howler';
 import { Component, ViewChild } from '@angular/core';
 import { IonRange } from '@ionic/angular';
 import { Router } from '@angular/router';
-
-export interface Track {
-  id: number,
-  name: string;
-  path: string;
-  subtitle: string;
-}
+import { Track } from '../../model/track'
 
 export interface ABLooping {
   start?: number;
