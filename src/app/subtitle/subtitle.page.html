@@ -23,7 +23,7 @@
         </span>
       </ion-text>
     </ion-item>
-    <ion-item
+    <ion-item #caption
       *ngFor="let caption of captions"
       (click)="selectCaption($event)"
       [attr.data-caption-id]="caption.id"

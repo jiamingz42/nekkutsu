@@ -1,5 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonContent } from '@ionic/angular';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ViewChildren,
+  Directive,
+  QueryList,
+} from '@angular/core';
+import { IonContent, IonItem } from '@ionic/angular';
 import webvtt from 'node-webvtt';
 import { Howl } from 'howler';
 import _ from 'lodash';
@@ -60,10 +67,10 @@ function parseToken(token: string): Furigana {
   };
 }
 
-main({
-  text: '感じ取れたら手を繋ごう、重なるのは人生のライン and レミリア最高！',
-  skipTranslate: true,
-}).then((v) => console.log(v));
+// main({
+//   text: '感じ取れたら手を繋ごう、重なるのは人生のライン and レミリア最高！',
+//   skipTranslate: true,
+// }).then((v) => console.log(v));
 
 export interface Caption {
   id: number;
@@ -72,11 +79,8 @@ export interface Caption {
   text: string;
 }
 
-// kuroshiro.init(function (err) {
-//   // kuroshiro is ready
-//   var result = kuroshiro.convert('感じ取れたら手を繋ごう、重なるのは人生のライン and レミリア最高！');
-//   console.log(result);
-// });
+@Directive({ selector: '.caption-item' })
+class CaptionItem {}
 
 @Component({
   selector: 'app-subtitle',
@@ -93,13 +97,14 @@ export class SubtitlePage implements OnInit {
   audioPath: string = 'assets/mp3/S01E01.mp3';
 
   activeId: number = 0;
-  captions: Caption[] = null;
+  captions: Caption[] = [];
 
   activeSoundId: number = null;
 
   furiganas: Furigana[] = null;
 
   @ViewChild('content', { static: false }) content: IonContent;
+  @ViewChildren('caption') captionsView: QueryList<IonItem>;
 
   ngOnInit() {
     const self = this;
@@ -190,11 +195,24 @@ export class SubtitlePage implements OnInit {
     this.activeSoundId = this.player.play(spriteKey);
   }
   private updateProgress() {
+    // Stop updating progress when the player stops / pauses
+    if (!this.player || !this.player.playing()) {
+      return;
+    }
+
     let seek = this.getPlayerSeek(this.player);
+
+    const matchedCaptions = this.captions.filter(
+      (c) => c.start <= seek && seek <= c.end
+    );
+
+    if (matchedCaptions.length > 0) {
+      this.activeId = matchedCaptions[0].id;
+    }
 
     setTimeout(() => {
       this.updateProgress();
-    }, 100);
+    }, 500);
   }
 
   private getPlayerSeek(player: Howl) {
