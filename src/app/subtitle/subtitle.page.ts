@@ -15,7 +15,12 @@ const charOpts = {
   delimiter_end: ']',
 };
 
-async function main({ text: _text, skipTranslate }) {
+export interface Furigana {
+  text: string;
+  ruby?: string;
+}
+
+async function main({ text: _text, skipTranslate }): Promise<Furigana[]> {
   const text = _text.replace(/\s+/g, ''); // remove whitespace
   const kuroshiro = new Kuroshiro.default();
   console.dir(KuromojiAnalyzer);
@@ -26,7 +31,7 @@ async function main({ text: _text, skipTranslate }) {
   const trimed = converted.replace(/<rp>(\[|\])<\/rp>/g, '');
   const regex = /^(<ruby>.*?<\/ruby>|.*?((?=<ruby>)|$))/;
   const tokens = tokenize(regex, trimed);
-  console.log(tokens.map(parseToken));
+  return tokens.map(parseToken);
 }
 
 function tokenize(regex: RegExp, text: string): string[] {
@@ -41,11 +46,6 @@ function tokenize(regex: RegExp, text: string): string[] {
 
   const remainingText = text.substr(match[1].length);
   return [match[1]].concat(tokenize(regex, remainingText));
-}
-
-export interface Furigana {
-  text: string;
-  ruby?: string;
 }
 
 function parseToken(token: string): Furigana {
@@ -63,7 +63,7 @@ function parseToken(token: string): Furigana {
 main({
   text: '感じ取れたら手を繋ごう、重なるのは人生のライン and レミリア最高！',
   skipTranslate: true,
-});
+}).then((v) => console.log(v));
 
 export interface Caption {
   id: number;
@@ -87,6 +87,7 @@ export class SubtitlePage implements OnInit {
   constructor() {}
 
   player: Howl = null;
+  isPlaying = false;
 
   subtitlePath: string = 'assets/mp3/S01E01.vtt';
   audioPath: string = 'assets/mp3/S01E01.mp3';
@@ -104,7 +105,9 @@ export class SubtitlePage implements OnInit {
     const self = this;
     this.player = new Howl({
       src: [self.audioPath],
-      onplay: () => {},
+      onplay: () => {
+        self.updateProgress();
+      },
       onend: () => {},
     });
     fetch(this.subtitlePath)
@@ -119,6 +122,12 @@ export class SubtitlePage implements OnInit {
           end: cue.end,
           text: cue.text,
         }));
+        // result.cues.forEach((element) => {
+        //   main({
+        //     text: element.text,
+        //     skipTranslate: true,
+        //   }).then((v) => console.log(v));
+        // });
       });
     self.furiganas = [
       { text: '私', ruby: 'わたし' },
@@ -136,6 +145,16 @@ export class SubtitlePage implements OnInit {
     if (this.captions && this.activeId < this.captions.length) {
       this.activateCaptionById(this.activeId + 1);
     }
+  }
+
+  play() {
+    this.isPlaying = true;
+    this.player.play();
+  }
+
+  pause() {
+    this.isPlaying = false;
+    this.player.pause();
   }
 
   scroll() {
@@ -169,5 +188,16 @@ export class SubtitlePage implements OnInit {
     }
 
     this.activeSoundId = this.player.play(spriteKey);
+  }
+  private updateProgress() {
+    let seek = this.getPlayerSeek(this.player);
+
+    setTimeout(() => {
+      this.updateProgress();
+    }, 100);
+  }
+
+  private getPlayerSeek(player: Howl) {
+    return this.player.seek() as number;
   }
 }

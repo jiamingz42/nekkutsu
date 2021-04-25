@@ -8,7 +8,9 @@
   <ion-list>
     <ion-item class="align-bottom">
       <p>
-        <span *ngFor="let furigana of furiganas" [attr.t]="furigana.ruby">{{ furigana.text }}</span>
+        <span *ngFor="let furigana of furiganas" [attr.t]="furigana.ruby"
+          >{{ furigana.text }}</span
+        >
       </p>
     </ion-item>
     <ion-item>
@@ -35,6 +37,13 @@
       </ion-label>
     </ion-item>
   </ion-list>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button color="secondary">
+      <ion-icon name="play-outline" *ngIf="!isPlaying" (click)="play()"></ion-icon>
+      <ion-icon name="pause-outline" *ngIf="isPlaying" (click)="pause()"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
 
 <ion-footer>
