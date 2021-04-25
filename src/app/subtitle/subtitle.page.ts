@@ -102,8 +102,8 @@ export class SubtitlePage implements OnInit {
   isPlaying = false;
   lastPlayerPosition = 0;
 
-  subtitlePath: string = 'assets/mp3/S01E01.vtt';
-  audioPath: string = 'assets/mp3/S01E01.mp3';
+  subtitlePath: string = null;
+  audioPath: string = null;
 
   activeId: number = 0;
   captions: Caption[] = [];
@@ -122,6 +122,9 @@ export class SubtitlePage implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     this.track = FixtureTracks[id];
+    this.subtitlePath = this.track.subtitlePath;
+    this.audioPath = this.track.audioPath;
+
     const self = this;
     this.player = new Howl({
       src: [self.audioPath],
