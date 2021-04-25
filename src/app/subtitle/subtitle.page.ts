@@ -164,15 +164,14 @@ export class SubtitlePage implements OnInit {
     this.player.pause();
   }
 
-  scroll() {
-    // this.content.scrollByPoint(0, 1000, 500);
-    this.player.play();
-  }
-
   selectCaption(event: any) {
     const captionIdStr: string = event.currentTarget.dataset.captionId;
     const captionId: number = _.toNumber(captionIdStr);
-    this.activateCaptionById(captionId);
+    if (this.isPlaying) {
+      this.player.seek(this.captions[captionId].start);
+    } else {
+      this.activateCaptionById(captionId);
+    }
   }
 
   logScrollStart() {
