@@ -33,10 +33,9 @@ interface SpriteConfig {
   styleUrls: ['./subtitle.page.scss'],
 })
 export class SubtitlePage implements OnInit {
-  constructor(private route : ActivatedRoute) {}
-  
-  track : Track = null;
+  constructor(private route: ActivatedRoute) {}
 
+  track: Track = null;
 
   player: Howl = null;
   isPlaying = false;
@@ -72,7 +71,13 @@ export class SubtitlePage implements OnInit {
         self.updateProgress();
       },
       onend: () => {},
-      onload: () => { this.isAudioLoaded = true; },
+      onload: () => {
+        this.isAudioLoaded = true;
+      },
+      onpause: () => {
+        console.log(this.player.seek());
+        this.lastPlayerPosition = this.player.seek() as number;
+      },
     });
     fetch(this.subtitlePath)
       .then(function (response) {
@@ -111,7 +116,6 @@ export class SubtitlePage implements OnInit {
 
   pause() {
     this.isPlaying = false;
-    this.lastPlayerPosition = this.player.seek() as number;
     this.player.pause();
   }
 
