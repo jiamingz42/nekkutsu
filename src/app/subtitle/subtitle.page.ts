@@ -11,6 +11,8 @@ import { IonContent, IonItem } from '@ionic/angular';
 import webvtt from 'node-webvtt';
 import { Howl } from 'howler';
 import _ from 'lodash';
+import { FixtureTracks } from '../fixtures';
+import { Track } from '../../model/track';
 
 import * as furigana from 'furigana';
 import * as Kuroshiro from 'kuroshiro';
@@ -93,7 +95,8 @@ interface SpriteConfig {
 export class SubtitlePage implements OnInit {
   constructor(private route : ActivatedRoute) {}
   
-  id : string = null;
+  track : Track = null;
+
 
   player: Howl = null;
   isPlaying = false;
@@ -117,7 +120,8 @@ export class SubtitlePage implements OnInit {
   @ViewChildren('caption') captionsView: QueryList<IonItem>;
 
   ngOnInit() {
-    this.id = this.route.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get('id');
+    this.track = FixtureTracks[id];
     const self = this;
     this.player = new Howl({
       src: [self.audioPath],
