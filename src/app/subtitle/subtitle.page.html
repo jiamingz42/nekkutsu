@@ -44,7 +44,7 @@
   </ion-list>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button color="secondary">
+    <ion-fab-button color="secondary" [disabled]="!isAudioLoaded">
       <ion-icon
         name="play-outline"
         *ngIf="!isPlaying"

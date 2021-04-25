@@ -111,6 +111,8 @@ export class SubtitlePage implements OnInit {
 
   isOnScrolling = false;
 
+  isAudioLoaded = false;
+
   @ViewChild('content', { static: false }) content: IonContent;
   @ViewChildren('caption') captionsView: QueryList<IonItem>;
 
@@ -122,6 +124,7 @@ export class SubtitlePage implements OnInit {
         self.updateProgress();
       },
       onend: () => {},
+      onload: () => { this.isAudioLoaded = true; },
     });
     fetch(this.subtitlePath)
       .then(function (response) {
