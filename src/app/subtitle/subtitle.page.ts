@@ -70,15 +70,24 @@ export class SubtitlePage implements OnInit {
       onplay: () => {
         self.updateProgress();
       },
-      onend: () => {},
+      onend: (soundId) => {
+        if (this.activeSoundId == soundId) {
+          // Reset the player position
+          this.lastPlayerPosition = 0; 
+        } else {
+          // TODO
+        }
+      },
       onload: () => {
         this.isAudioLoaded = true;
       },
       onpause: () => {
-        console.log(this.player.seek());
         this.lastPlayerPosition = this.player.seek() as number;
       },
     });
+    this.activeSoundId = this.player.play();
+    this.player.pause();
+    
     fetch(this.subtitlePath)
       .then(function (response) {
         return response.text();
@@ -163,9 +172,9 @@ export class SubtitlePage implements OnInit {
 
     if (spriteConfig) {
       (this.player as any)._sprite[spriteConfig.key] = spriteConfig.value;
-      this.activeSoundId = this.player.play(spriteConfig.key);
+      this.player.play(spriteConfig.key);
     } else {
-      this.activeSoundId = this.player.play();
+      this.player.play(this.activeSoundId);
       this.isPlaying = true;
     }
   }
