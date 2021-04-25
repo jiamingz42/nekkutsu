@@ -48,7 +48,7 @@ export class HomePage {
       this.player.stop();
     }
     this.player = new Howl({
-      src: [track.path],
+      src: [track.audioPath],
       onplay: () => {
         this.activeTrack = track;
         this.isPlaying = true;
