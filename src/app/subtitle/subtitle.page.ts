@@ -108,6 +108,8 @@ export class SubtitlePage implements OnInit {
 
   furiganas: Furigana[] = null;
 
+  isOnScrolling = false;
+
   @ViewChild('content', { static: false }) content: IonContent;
   @ViewChildren('caption') captionsView: QueryList<IonItem>;
 
@@ -148,6 +150,7 @@ export class SubtitlePage implements OnInit {
 
   play() {
     this.playInternal();
+    // this.content.
   }
 
   pause() {
@@ -164,6 +167,14 @@ export class SubtitlePage implements OnInit {
     const captionIdStr: string = event.currentTarget.dataset.captionId;
     const captionId: number = _.toNumber(captionIdStr);
     this.activateCaptionById(captionId);
+  }
+
+  logScrollStart() {
+    this.isOnScrolling = true;
+  }
+
+  logScrollEnd() {
+    this.isOnScrolling = false;
   }
 
   private activateCaptionById(captionId: number) {
@@ -211,13 +222,30 @@ export class SubtitlePage implements OnInit {
       this.captions,
       (c) => c.start <= seek && seek <= c.end
     );
-    if (matchedCaption) {
+    if (matchedCaption && this.activeId != matchedCaption.id) {
       this.activeId = matchedCaption.id;
+      if (!this.isOnScrolling) {
+        const itemOffsetTop = this.getOffsetTop(
+          this.captionsView,
+          this.activeId
+        );
+        const firstItemOffsetTop = this.getOffsetTop(this.captionsView, 0);
+        this.content.scrollToPoint(
+          0,
+          itemOffsetTop - firstItemOffsetTop - 350, /* TODO: Hard-coded */
+          1000
+        );
+      }
     }
 
     setTimeout(() => {
       this.updateProgress();
     }, 500);
+  }
+
+  private getOffsetTop(captionsView: QueryList<IonItem>, index: number) {
+    const item: IonItem = this.captionsView.get(index);
+    return item['el'].offsetTop;
   }
 
   private getPlayerSeek(player: Howl) {

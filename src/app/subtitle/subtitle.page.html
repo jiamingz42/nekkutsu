@@ -4,7 +4,11 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content #content>
+<ion-content
+  #content
+  (ionScrollStart)="logScrollStart()"
+  (ionScrollEnd)="logScrollEnd()"
+>
   <ion-list>
     <ion-item class="align-bottom">
       <p>
@@ -23,7 +27,8 @@
         </span>
       </ion-text>
     </ion-item>
-    <ion-item #caption
+    <ion-item
+      #caption
       *ngFor="let caption of captions"
       (click)="selectCaption($event)"
       [attr.data-caption-id]="caption.id"
@@ -40,8 +45,16 @@
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
     <ion-fab-button color="secondary">
-      <ion-icon name="play-outline" *ngIf="!isPlaying" (click)="play()"></ion-icon>
-      <ion-icon name="pause-outline" *ngIf="isPlaying" (click)="pause()"></ion-icon>
+      <ion-icon
+        name="play-outline"
+        *ngIf="!isPlaying"
+        (click)="play()"
+      ></ion-icon>
+      <ion-icon
+        name="pause-outline"
+        *ngIf="isPlaying"
+        (click)="pause()"
+      ></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
