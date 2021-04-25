@@ -79,6 +79,11 @@ export interface Caption {
   text: string;
 }
 
+interface SpriteConfig {
+  key: string;
+  value: any[];
+}
+
 @Directive({ selector: '.caption-item' })
 class CaptionItem {}
 
@@ -153,8 +158,7 @@ export class SubtitlePage implements OnInit {
   }
 
   play() {
-    this.isPlaying = true;
-    this.player.play();
+    this.playInternal();
   }
 
   pause() {
@@ -179,21 +183,33 @@ export class SubtitlePage implements OnInit {
     this.startLooping(caption.start, caption.end);
   }
 
-  private startLooping(start: number, end: number) {
-    let spriteKey = `${start}_${end}`;
-    (this.player as any)._sprite[spriteKey] = [
-      start * 1000,
-      (end - start) * 1000,
-      /* loop= */ false,
-    ];
+  private createSpriteConfig(start: number, end: number): SpriteConfig {
+    return {
+      key: `${start}_${end}`,
+      value: [start * 1000, (end - start) * 1000, /* loop= */ false],
+    };
+  }
 
+  private startLooping(start: number, end: number) {
+    const spriteConfig = this.createSpriteConfig(start, end);
+    this.playInternal(spriteConfig);
+  }
+
+  private playInternal(spriteConfig?: SpriteConfig) {
     // NOTE: Without this, you will hear two audio tracks playing at the same time
     if (this.player) {
       this.player.stop();
     }
 
-    this.activeSoundId = this.player.play(spriteKey);
+    if (spriteConfig) {
+      (this.player as any)._sprite[spriteConfig.key] = spriteConfig.value;
+      this.activeSoundId = this.player.play(spriteConfig.key);
+    } else {
+      this.activeSoundId = this.player.play();
+    }
+    this.isPlaying = true;
   }
+
   private updateProgress() {
     // Stop updating progress when the player stops / pauses
     if (!this.player || !this.player.playing()) {
@@ -202,12 +218,12 @@ export class SubtitlePage implements OnInit {
 
     let seek = this.getPlayerSeek(this.player);
 
-    const matchedCaptions = this.captions.filter(
+    const matchedCaption = _.find(
+      this.captions,
       (c) => c.start <= seek && seek <= c.end
     );
-
-    if (matchedCaptions.length > 0) {
-      this.activeId = matchedCaptions[0].id;
+    if (matchedCaption) {
+      this.activeId = matchedCaption.id;
     }
 
     setTimeout(() => {
