@@ -146,17 +146,6 @@ export class SubtitlePage implements OnInit {
     ];
   }
 
-  prev() {
-    if (this.activeId > 0) {
-      this.activateCaptionById(this.activeId - 1);
-    }
-  }
-  next() {
-    if (this.captions && this.activeId < this.captions.length) {
-      this.activateCaptionById(this.activeId + 1);
-    }
-  }
-
   play() {
     this.playInternal();
   }
