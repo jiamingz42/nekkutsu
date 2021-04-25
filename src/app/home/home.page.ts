@@ -1,8 +1,10 @@
 import { Howl } from 'howler';
 import { Component, ViewChild } from '@angular/core';
 import { IonRange } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 export interface Track {
+  id: number,
   name: string;
   path: string;
   subtitle: string;
@@ -28,41 +30,49 @@ class LoopingManager {
 export class HomePage {
   playlist: Track[] = [
     {
+      id: 1,
       name: 'S01E01',
       path: './assets/mp3/S01E01.mp3',
       subtitle: './assets/mp3/S01E01.vtt',
     },
     {
+      id: 2,
       name: 'S01E02',
       path: './assets/mp3/S01E02.mp3',
       subtitle: './assets/mp3/S01E02.vtt',
     },
     {
+      id: 3,
       name: 'S01E03',
       path: './assets/mp3/S01E03.mp3',
       subtitle: './assets/mp3/S01E03.vtt',
     },
     {
+      id: 4,
       name: 'S01E04',
       path: './assets/mp3/S01E04.mp3',
       subtitle: './assets/mp3/S01E04.vtt',
     },
     {
+      id: 5,
       name: 'S01E05',
       path: './assets/mp3/S01E05.mp3',
       subtitle: './assets/mp3/S01E05.vtt',
     },
     {
+      id: 6,
       name: 'S01E06',
       path: './assets/mp3/S01E06.mp3',
       subtitle: './assets/mp3/S01E06.vtt',
     },
     {
+      id: 7,
       name: 'S01E07',
       path: './assets/mp3/S01E07.mp3',
       subtitle: './assets/mp3/S01E07.vtt',
     },
     {
+      id: 8,
       name: 'S01E08',
       path: './assets/mp3/S01E08.mp3',
       subtitle: './assets/mp3/S01E08.vtt',
@@ -85,7 +95,7 @@ export class HomePage {
 
   @ViewChild('range', { static: false }) range: IonRange;
 
-  constructor() {}
+  constructor(private router : Router) {}
 
   start(track: Track) {
     if (this.player) {
@@ -134,6 +144,10 @@ export class HomePage {
     let seek = this.getPlayerSeek(this.player);
     this.player.seek(Math.max(0, seek - second));
     this.updateProgress(/* once= */ true);
+  }
+
+  go(id) {
+    this.router.navigateByUrl(`/subtitle/${id}`);
   }
 
   private getPlayerSeek(player: Howl) {

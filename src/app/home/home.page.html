@@ -6,7 +6,8 @@
 
 <ion-content>
   <ion-list>
-    <ion-item button *ngFor="let track of playlist" (click)="start(track)">
+    <!-- <ion-item button *ngFor="let track of playlist" (click)="start(track)"> -->
+    <ion-item button *ngFor="let track of playlist" (click)="go(track.id)">
       <ion-label [color]="track == activeTrack ? 'success' : 'light'">
         {{ track.name }}
       </ion-label>
