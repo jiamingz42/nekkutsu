@@ -150,7 +150,11 @@ export class SubtitlePage implements OnInit {
 
   play() {
     this.playInternal();
-    // this.content.
+    this.player.seek(this.activeCaption.start);
+  }
+
+  get activeCaption() {
+    return this.captions[this.activeId];
   }
 
   pause() {
