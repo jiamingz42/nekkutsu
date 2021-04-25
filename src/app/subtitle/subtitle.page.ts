@@ -6,6 +6,7 @@ import {
   Directive,
   QueryList,
 } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { IonContent, IonItem } from '@ionic/angular';
 import webvtt from 'node-webvtt';
 import { Howl } from 'howler';
@@ -84,16 +85,15 @@ interface SpriteConfig {
   value: any[];
 }
 
-@Directive({ selector: '.caption-item' })
-class CaptionItem {}
-
 @Component({
   selector: 'app-subtitle',
   templateUrl: './subtitle.page.html',
   styleUrls: ['./subtitle.page.scss'],
 })
 export class SubtitlePage implements OnInit {
-  constructor() {}
+  constructor(private route : ActivatedRoute) {}
+  
+  id : string = null;
 
   player: Howl = null;
   isPlaying = false;
@@ -117,6 +117,7 @@ export class SubtitlePage implements OnInit {
   @ViewChildren('caption') captionsView: QueryList<IonItem>;
 
   ngOnInit() {
+    this.id = this.route.snapshot.paramMap.get('id');
     const self = this;
     this.player = new Howl({
       src: [self.audioPath],

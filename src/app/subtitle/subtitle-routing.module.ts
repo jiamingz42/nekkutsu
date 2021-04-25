@@ -5,7 +5,7 @@ import { SubtitlePage } from './subtitle.page';
 
 const routes: Routes = [
   {
-    path: '',
+    path: ':id',
     component: SubtitlePage
   }
 ];
