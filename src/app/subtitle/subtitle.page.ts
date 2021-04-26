@@ -27,14 +27,14 @@ interface SpriteConfig {
   value: any[];
 }
 
+type SpriteConfigMap = Record<number, SpriteConfig>;
+
 @Component({
   selector: 'app-subtitle',
   templateUrl: './subtitle.page.html',
   styleUrls: ['./subtitle.page.scss'],
 })
 export class SubtitlePage implements OnInit {
-  constructor(private route: ActivatedRoute) {}
-
   track: Track = null;
 
   player: Howl = null;
@@ -51,9 +51,14 @@ export class SubtitlePage implements OnInit {
 
   furiganas: Furigana[] = null;
 
-  isOnScrolling = false;
+  // TODO: When touchstart, display an floating button on top and temporarily disable auto-scrolling
+  enableAutoScrolling = true;
 
   isAudioLoaded = false;
+
+  spriteConfigMap: SpriteConfigMap = {};
+
+  constructor(private route: ActivatedRoute) {}
 
   @ViewChild('content', { static: false }) content: IonContent;
   @ViewChildren('caption') captionsView: QueryList<IonItem>;
@@ -73,7 +78,7 @@ export class SubtitlePage implements OnInit {
       onend: (soundId) => {
         if (this.activeSoundId == soundId) {
           // Reset the player position
-          this.lastPlayerPosition = 0; 
+          this.lastPlayerPosition = 0;
         } else {
           // TODO
         }
@@ -87,7 +92,7 @@ export class SubtitlePage implements OnInit {
     });
     this.activeSoundId = this.player.play();
     this.player.pause();
-    
+
     fetch(this.subtitlePath)
       .then(function (response) {
         return response.text();
@@ -138,12 +143,17 @@ export class SubtitlePage implements OnInit {
     }
   }
 
-  logScrollStart() {
-    this.isOnScrolling = true;
+  logScrollStart(evt) {
+    if (evt.srcElement.tagName == "ION-ICON") {
+      return;
+    }
+    if (this.isPlaying) {
+      this.enableAutoScrolling = false;
+    }
   }
 
-  logScrollEnd() {
-    this.isOnScrolling = false;
+  resumeAutoScrolling() {
+    this.enableAutoScrolling = true;
   }
 
   private activateCaptionById(captionId: number) {
@@ -193,7 +203,7 @@ export class SubtitlePage implements OnInit {
     );
     if (matchedCaption && this.activeId != matchedCaption.id) {
       this.activeId = matchedCaption.id;
-      if (!this.isOnScrolling) {
+      if (this.enableAutoScrolling) {
         const itemOffsetTop = this.getOffsetTop(
           this.captionsView,
           this.activeId

@@ -4,11 +4,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content
-  #content
-  (touchstart)="logScrollStart()"
-  (touchend)="logScrollEnd()"
->
+<ion-content #content [scrollEvents]="true" (touchmove)="logScrollStart($event)">
   <ion-list>
     <!-- <ion-item class="align-bottom">
       <p>
@@ -42,6 +38,12 @@
       </ion-label>
     </ion-item>
   </ion-list>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="start" *ngIf="!enableAutoScrolling">
+    <ion-fab-button color="medium" (click)="resumeAutoScrolling()">
+      <ion-text>Auto<br>Scroll</ion-text>
+    </ion-fab-button>
+  </ion-fab>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
     <ion-fab-button color="secondary" [disabled]="!isAudioLoaded">
