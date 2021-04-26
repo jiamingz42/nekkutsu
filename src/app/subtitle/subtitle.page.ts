@@ -44,7 +44,9 @@ export class SubtitlePage implements OnInit {
   subtitlePath: string = null;
   audioPath: string = null;
 
-  activeId: number = 0;
+  _currCaptionId: number = 0;
+  _lastCaptionId: number = -1;
+
   captions: Caption[] = [];
 
   activeSoundId: number = null;
@@ -125,7 +127,7 @@ export class SubtitlePage implements OnInit {
   }
 
   get activeCaption() {
-    return this.captions[this.activeId];
+    return this.captions[this.currCaptionId];
   }
 
   pause() {
@@ -156,9 +158,18 @@ export class SubtitlePage implements OnInit {
     this.enableAutoScrolling = true;
   }
 
+  get currCaptionId() {
+    return this._currCaptionId;
+  }
+
+  set currCaptionId(val: number) {
+    this._lastCaptionId = this._currCaptionId;
+    this._currCaptionId = val;
+  }
+
   private activateCaptionById(captionId: number) {
     const caption = this.captions[captionId];
-    this.activeId = captionId;
+    this.currCaptionId = captionId;
     this.startLooping(caption.start, caption.end);
   }
 
@@ -201,12 +212,12 @@ export class SubtitlePage implements OnInit {
       this.captions,
       (c) => c.start <= seek && seek <= c.end
     );
-    if (matchedCaption && this.activeId != matchedCaption.id) {
-      this.activeId = matchedCaption.id;
+    if (matchedCaption && this.currCaptionId != matchedCaption.id) {
+      this.currCaptionId = matchedCaption.id;
       if (this.enableAutoScrolling) {
         const itemOffsetTop = this.getOffsetTop(
           this.captionsView,
-          this.activeId
+          this.currCaptionId
         );
         const firstItemOffsetTop = this.getOffsetTop(this.captionsView, 0);
         this.content.scrollToPoint(
